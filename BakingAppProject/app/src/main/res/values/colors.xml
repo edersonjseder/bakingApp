@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimaryLight">#B3E5FC</color>
+    <color name="color_green">#69B66F</color>
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_steps_item_list">#295629</color>
+    <color name="color_background_card">#CAE8CC</color>
+
+    <color name="detail_accent_label">#CBE1CB</color>
+</resources>

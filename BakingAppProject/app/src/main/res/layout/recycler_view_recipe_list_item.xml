@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cv_recipe_titles"
+    card_view:cardCornerRadius="7dp"
+    card_view:cardElevation="7dp"
+    card_view:cardUseCompatPadding="true"
+    card_view:cardBackgroundColor="@color/color_background_card"
+    android:layout_margin="3dp"
+    android:padding="1dp">
+
+    <!--Card Image
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/img_recipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/restaurant"
+        app:riv_corner_radius="6dp"/> -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="25dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:orientation="vertical">
+
+                <!--Title Text-->
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="5dp"
+                    android:background="@drawable/transparent_card">
+
+                    <TextView
+                        android:id="@+id/tv_recipe_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        tools:text="Nutella Pie"
+                        android:textColor="@android:color/white"
+                        android:textSize="28sp"
+                        android:layout_margin="5dp"
+                        android:paddingRight="18dp"
+                        android:paddingLeft="18dp"/>
+
+                    <TextView
+                        android:id="@+id/tv_recipe_servings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:paddingBottom="3dp"
+                        style="@style/Baking_title"
+                        android:text="@string/servings_title" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</android.support.v7.widget.CardView>
