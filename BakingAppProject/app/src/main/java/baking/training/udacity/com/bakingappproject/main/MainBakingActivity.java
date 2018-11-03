@@ -29,6 +29,8 @@ import baking.training.udacity.com.bakingappproject.model.Recipe;
 import baking.training.udacity.com.bakingappproject.recipedetail.IngredientsActivity;
 import baking.training.udacity.com.bakingappproject.services.RecipeHttpClient;
 import baking.training.udacity.com.bakingappproject.services.RecipeService;
+import baking.training.udacity.com.bakingappproject.utils.AlertDialogManager;
+import baking.training.udacity.com.bakingappproject.utils.ConnectionDetector;
 import baking.training.udacity.com.bakingappproject.utils.ConnectionPathUtils;
 import baking.training.udacity.com.bakingappproject.utils.ParseJSONToJava;
 import retrofit2.Call;
@@ -36,6 +38,10 @@ import retrofit2.Call;
 public class MainBakingActivity extends AppCompatActivity implements OnRecipeItemSelectedListener,
         LoaderManager.LoaderCallbacks<List<Recipe>> {
     private static final String TAG = MainBakingActivity.class.getSimpleName();
+
+    private ConnectionDetector detector;
+
+    private AlertDialogManager dialogManager;
 
     private RecyclerView mRecyclerView;
 
@@ -56,6 +62,23 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
 
         // Columns for the grid
         int numColumns = 2;
+
+        // Dialog to show the message if there is no connection available
+        dialogManager = new AlertDialogManager();
+
+        // Detects if there is connection available
+        detector = new ConnectionDetector(getApplicationContext());
+
+        Log.i(TAG, "onCreate() internet detector: " + detector.isConnectingToInternet());
+
+        // Check for internet connection
+        if (!detector.isConnectingToInternet()) {
+            // Internet Connection is not present
+            dialogManager.showAlertDialog(MainBakingActivity.this, "Internet Connection Error",
+                    "Please connect to working Internet connection", false);
+            // stop executing code by return
+            return;
+        }
 
         mRecyclerView = findViewById(R.id.recyclerview_recipes);
 
