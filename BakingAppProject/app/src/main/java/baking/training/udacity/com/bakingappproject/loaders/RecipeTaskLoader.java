@@ -22,7 +22,6 @@ public class RecipeTaskLoader extends AsyncTaskLoader<List<Recipe>> {
     List<Recipe> recipeList = null;
 
     private ProgressBar mLoadingIndicator;
-//          ParseJSONToJava parseJSONToJava;
 
     // MainActivity.
     private MainBakingActivity context;
@@ -65,29 +64,6 @@ public class RecipeTaskLoader extends AsyncTaskLoader<List<Recipe>> {
 
         }
 
-/**
-         parseJSONToJava = new ParseJSONToJava();
-
-         URL recipeRequestUrl = ConnectionPathUtils.buildJsonUrl();
-
-         Log.i(TAG, "loadInBackground() inside method: " + recipeRequestUrl);
-
-         try {
-
-         // This does the query to the API to retrieve the JSON result
-         String jsonRecipeResponse = ConnectionPathUtils.doQuery(recipeRequestUrl);
-
-         //Execute method to get the JSON Object and convert it to Java Object
-         recipeList = parseJSONToJava.convertJsonToRecipeJavaClass(jsonRecipeResponse);
-
-         Log.i(TAG, "doInBackground() inside method - Pages: " + recipeList);
-
-         } catch (Exception e) {
-         e.printStackTrace();
-         recipeList = null;
-
-         }
- **/
         return recipeList;
     }
 

@@ -44,6 +44,7 @@ public class StepDetailsFragment extends Fragment {
     public static final String CURRENT_WINDOW_INDEX = "current_window_index";
     public static final String PLAYBACK_POSITION = "playback_position";
     public static final String AUTOPLAY = "autoplay";
+    public static final String PLAY_WHEN_READY = "playWhenReady";
 
     //Play position
     private int currentWindow;
@@ -63,6 +64,7 @@ public class StepDetailsFragment extends Fragment {
     private ImageView imageViewRecipeImageStepDetail;
 
     private LinearLayout linearLayoutStepDetail;
+    private boolean mPlayVideoWhenForegrounded;
 
     public StepDetailsFragment() {
         // Required empty public constructor
@@ -260,12 +262,6 @@ public class StepDetailsFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        releasePlayer();
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
         releasePlayer();
@@ -276,8 +272,8 @@ public class StepDetailsFragment extends Fragment {
 
         outState.putSerializable(STEP_SELECTED, mStep);
 
-        if(exoPlayer == null){
-            outState.putLong(PLAYBACK_POSITION, playbackPosition);
+        if(exoPlayer != null){
+            outState.putLong(PLAYBACK_POSITION, exoPlayer.getCurrentPosition());
             outState.putInt(CURRENT_WINDOW_INDEX, currentWindow);
             outState.putBoolean(AUTOPLAY, autoPlay);
         }
