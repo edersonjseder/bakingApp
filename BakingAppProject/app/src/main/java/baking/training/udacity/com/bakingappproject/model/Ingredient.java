@@ -1,14 +1,20 @@
 package baking.training.udacity.com.bakingappproject.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity(tableName = "ingredient")
 public class Ingredient implements Serializable {
+
+    @JsonIgnore
+    @PrimaryKey(autoGenerate = true)
+    private Integer id;
 
     @JsonProperty("quantity")
     private Integer quantity;
@@ -20,6 +26,14 @@ public class Ingredient implements Serializable {
     private String ingredient;
 
     public Ingredient(){}
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getQuantity() {
         return quantity;

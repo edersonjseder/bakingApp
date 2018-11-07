@@ -4,18 +4,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import baking.training.udacity.com.bakingappproject.R;
 import baking.training.udacity.com.bakingappproject.adapter.StepsAdapter;
-import baking.training.udacity.com.bakingappproject.listeners.OnStepItemSelectedListener;
 import baking.training.udacity.com.bakingappproject.model.Ingredient;
 import baking.training.udacity.com.bakingappproject.model.Recipe;
 import baking.training.udacity.com.bakingappproject.model.Step;
@@ -105,6 +102,11 @@ public class IngredientsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     private void onDescribeIngredients(List<Ingredient> ingredients) {
 
         double qtde;
@@ -118,7 +120,7 @@ public class IngredientsFragment extends Fragment {
             ingredient = ingredients.get(i).getIngredient();
 
             String desc = String.valueOf(qtde) + " " + measure;
-            String concat = getString(R.string.format_ingre, desc);
+            String concat = getString(R.string.format_ingredient, desc);
             String complete = "- " + concat + " " + ingredient +"\n";
 
             tvIngredientName.append(complete);

@@ -1,11 +1,11 @@
 package baking.training.udacity.com.bakingappproject.main;
 
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +17,6 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import baking.training.udacity.com.bakingappproject.R;
@@ -27,13 +25,9 @@ import baking.training.udacity.com.bakingappproject.listeners.OnRecipeItemSelect
 import baking.training.udacity.com.bakingappproject.loaders.RecipeTaskLoader;
 import baking.training.udacity.com.bakingappproject.model.Recipe;
 import baking.training.udacity.com.bakingappproject.recipedetail.IngredientsActivity;
-import baking.training.udacity.com.bakingappproject.services.RecipeHttpClient;
-import baking.training.udacity.com.bakingappproject.services.RecipeService;
 import baking.training.udacity.com.bakingappproject.utils.AlertDialogManager;
 import baking.training.udacity.com.bakingappproject.utils.ConnectionDetector;
-import baking.training.udacity.com.bakingappproject.utils.ConnectionPathUtils;
-import baking.training.udacity.com.bakingappproject.utils.ParseJSONToJava;
-import retrofit2.Call;
+import baking.training.udacity.com.bakingappproject.widget.BakingAppWidgetService;
 
 public class MainBakingActivity extends AppCompatActivity implements OnRecipeItemSelectedListener,
         LoaderManager.LoaderCallbacks<List<Recipe>> {
@@ -55,10 +49,19 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
 
     private Bundle bundleForLoader;
 
+    private boolean isOffline;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_baking);
+
+        mRecyclerView = findViewById(R.id.recyclerview_recipes);
+
+        /* This TextView is used to display errors and will be hidden if there are no errors */
+        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
+
+        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
         // Columns for the grid
         int numColumns = 2;
@@ -71,21 +74,17 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
 
         Log.i(TAG, "onCreate() internet detector: " + detector.isConnectingToInternet());
 
-        // Check for internet connection
-        if (!detector.isConnectingToInternet()) {
+        isOffline = (!detector.isConnectingToInternet());
+
+        if (isOffline) {
+
             // Internet Connection is not present
             dialogManager.showAlertDialog(MainBakingActivity.this, "Internet Connection Error",
-                    "Please connect to working Internet connection", false);
-            // stop executing code by return
+                    "There is no Internet connection", false);
+
             return;
+
         }
-
-        mRecyclerView = findViewById(R.id.recyclerview_recipes);
-
-        /* This TextView is used to display errors and will be hidden if there are no errors */
-        mErrorMessageDisplay = findViewById(R.id.tv_error_message_display);
-
-        mLoadingIndicator = findViewById(R.id.pb_loading_indicator);
 
         // Boolean to verify whether is tablet mode or not
         boolean isTableMode = getResources().getBoolean(R.bool.isTablet);
@@ -137,8 +136,6 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
     public void onLoadFinished(@NonNull Loader<List<Recipe>> loader, List<Recipe> data) {
         Log.i(TAG, "onLoadFinished() inside method");
 
-        mLoadingIndicator.setVisibility(View.INVISIBLE);
-
         try {
 
             if (data != null){
@@ -158,11 +155,14 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
 
     private void showRecipeList(List<Recipe> recipeList) {
 
+        mLoadingIndicator.setVisibility(View.INVISIBLE);
+
         /*
          * The RecipeAdapter is responsible for linking our recipe data with the Views that
          * will end up displaying our recipe data.
          */
-        recipeAdapter = new RecipeAdapter(recipeList, this, getApplicationContext());
+        recipeAdapter =
+                new RecipeAdapter(recipeList, this, getApplicationContext());
 
         /* Setting the adapter attaches it to the RecyclerView in our layout. */
         mRecyclerView.setAdapter(recipeAdapter);
@@ -175,14 +175,24 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
     }
 
     @Override
-    public void onRecipeItemSelected(Recipe recipe, int position) {
-        Log.i(TAG, "onRecipeItemSelected() inside method: " + recipe.getName());
+    public void onRecipeItemSelected(final Recipe recipeSelected, int position) {
+        Log.i(TAG, "onRecipeItemSelected() inside method: " + recipeSelected.getName());
+
+        startIntentServiceWidgetUpdate(recipeSelected);
 
         Context context = this;
         Class destinationClass = IngredientsActivity.class;
 
+        Bundle bundle = new Bundle();
+
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
-        intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, recipe);
+
+        bundle.putSerializable(IngredientsActivity.RECIPE_KEY, recipeSelected);
+
+        bundle.putString(IngredientsActivity.TITLE, recipeSelected.getName());
+
+        intentToStartDetailActivity.putExtras(bundle);
+
         startActivity(intentToStartDetailActivity);
 
     }
@@ -200,6 +210,25 @@ public class MainBakingActivity extends AppCompatActivity implements OnRecipeIte
         mRecyclerView.setVisibility(View.INVISIBLE);
         /* Then, show the error */
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    public void startIntentServiceWidgetUpdate(Recipe recipeSelected){
+
+        // Add the baking app service click handler
+        Intent bakingIntent = new Intent(this, BakingAppWidgetService.class);
+
+        Bundle bundle = new Bundle();
+
+        bundle.putSerializable(BakingAppWidgetService.RECIPE_SELECTED, recipeSelected);
+
+        bakingIntent.putExtras(bundle);
+
+        PendingIntent bakingPendingIntent =
+                PendingIntent.getService(this, 0,
+                        bakingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        startService(bakingIntent);
+
     }
 
 }

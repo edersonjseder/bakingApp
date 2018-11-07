@@ -1,5 +1,8 @@
 package baking.training.udacity.com.bakingappproject.model;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,18 +13,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import baking.training.udacity.com.bakingappproject.typeconverter.DataIngredientConverter;
+import baking.training.udacity.com.bakingappproject.typeconverter.DataStepConverter;
+
+@Entity(tableName = "recipe")
 public class Recipe implements Serializable {
 
     @JsonProperty("id")
+    @PrimaryKey
     private Integer id;
 
     @JsonProperty("name")
     private String name;
 
     @JsonProperty("ingredients")
+    @TypeConverters(DataIngredientConverter.class)
     private List<Ingredient> ingredients = null;
 
     @JsonProperty("steps")
+    @TypeConverters(DataStepConverter.class)
     private List<Step> steps = null;
 
     @JsonProperty("servings")

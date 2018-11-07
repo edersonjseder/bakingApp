@@ -2,6 +2,7 @@ package baking.training.udacity.com.bakingappproject.recipedetail;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,10 @@ import baking.training.udacity.com.bakingappproject.model.Step;
 public class IngredientsActivity extends AppCompatActivity implements OnStepItemSelectedListener {
     private static final String TAG = IngredientsActivity.class.getSimpleName();
 
-    private IngredientsFragment ingredientsFragment;
+
+    public static final String RECIPE_KEY = "recipeSelected";
+    public static final String TITLE = "recipeName";
+    private Recipe mRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,27 +30,20 @@ public class IngredientsActivity extends AppCompatActivity implements OnStepItem
         setContentView(R.layout.activity_detail_ingredients);
         Log.i(TAG, "onCreate() inside method");
 
-        Intent intentThatStartedThisActivity = getIntent();
+        Bundle extrasComingFromThisActivity = getIntent().getExtras();
 
         //recover the bundle
         if(savedInstanceState == null){
 
-            if (intentThatStartedThisActivity != null) {
-                if (intentThatStartedThisActivity.hasExtra(Intent.EXTRA_TEXT)) {
+            mRecipe = (Recipe) extrasComingFromThisActivity.getSerializable(RECIPE_KEY);
 
-                    Recipe recipe = (Recipe) intentThatStartedThisActivity
-                                                .getSerializableExtra(Intent.EXTRA_TEXT);
+            setTitle(extrasComingFromThisActivity.getString(TITLE));
 
-                    setTitle(recipe.getName());
+            IngredientsFragment ingredientsFragment = IngredientsFragment.newInstance(mRecipe);
 
-                    ingredientsFragment = IngredientsFragment.newInstance(recipe);
-
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .add(R.id.id_content_fragments, ingredientsFragment).commit();
-
-                }
-            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.id_content_fragments, ingredientsFragment).commit();
 
         }
 
@@ -83,5 +80,13 @@ public class IngredientsActivity extends AppCompatActivity implements OnStepItem
 
         }
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putSerializable(RECIPE_KEY, mRecipe);
+
+        super.onSaveInstanceState(outState);
     }
 }

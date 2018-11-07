@@ -1,3 +1,3 @@
 # bakingApp
 
-App to demonstrate a food recipe 
+App to demonstrate a food recipe and it's getting improved

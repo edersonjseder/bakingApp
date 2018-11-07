@@ -1,5 +1,8 @@
 package baking.training.udacity.com.bakingappproject.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,9 +11,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity(tableName = "step")
 public class Step implements Serializable {
 
     @JsonProperty("id")
+    @PrimaryKey
     private Integer id;
 
     @JsonProperty("shortDescription")
@@ -20,9 +25,11 @@ public class Step implements Serializable {
     private String description;
 
     @JsonProperty("videoURL")
+    @ColumnInfo(name = "video_url")
     private String videoURL;
 
     @JsonProperty("thumbnailURL")
+    @ColumnInfo(name = "thumbnail_url")
     private String thumbnailURL;
 
     public Step() {}

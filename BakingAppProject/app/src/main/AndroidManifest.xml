@@ -28,7 +28,9 @@
                 android:value=".main.MainBakingActivity" />
         </activity>
 
-        <receiver android:name=".widget.BakingAppWidget">
+        <service android:name=".widget.BakingAppWidgetService" />
+
+        <receiver android:name=".widget.BakingAppWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -38,7 +40,13 @@
                 android:resource="@xml/baking_app_widget_info" />
         </receiver>
 
-        <activity android:name=".recipedetail.StepDetailsActivity"></activity>
+        <activity android:name=".recipedetail.StepDetailsActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".recipedetail.IngredientsActivity" />
+
+        </activity>
     </application>
 
 </manifest>
